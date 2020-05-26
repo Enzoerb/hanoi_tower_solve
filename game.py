@@ -6,6 +6,7 @@ class HanoiTower:
     def __init__(self, number_disks=randint(3, 15)):
         self.rods = list()
         self.number_disks = number_disks
+        self.moves = 0
 
     def inicialize_game(self):
         disks = range(self.number_disks)
@@ -25,6 +26,7 @@ class HanoiTower:
             number = self.rods[rod_from][-1]
             self.rods[rod_to].append(number)
             self.rods[rod_from].pop()
+            self.moves += 1
         except IndexError as err:
             try:
                 self.rods[rod_from]
@@ -66,7 +68,7 @@ class HanoiTower:
 
 
 if __name__ == '__main__':
-    Game = HanoiTower(5)
+    Game = HanoiTower(15)
     Game.inicialize_game()
     print(str(Game))
     if len(Game.rods[0]) > 0:
