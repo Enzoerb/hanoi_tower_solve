@@ -50,7 +50,6 @@ if __name__ == '__main__':
     print(Game.number_disks, Game.moves)
 
     Game = HanoiTower(20)
-    setrecursionlimit(2*(2**Game.number_disks))
     Solve = SolveHanoiTower(Game)
     print(str(Game))
     Solve.non_recursion_solve()
