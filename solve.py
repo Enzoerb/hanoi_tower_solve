@@ -1,4 +1,5 @@
 from game import HanoiTower
+from sys import setrecursionlimit
 
 
 class SolveHanoiTower:
@@ -7,48 +8,53 @@ class SolveHanoiTower:
         self.Game = Game
         self.higher = 0
         self.lower = 2
+        self.order = [(0, 1), (0, 2), (1, 2)]
+        self.actual_change = 0
         if not inicialized:
             self.Game.inicialize_game()
 
-    def higher_lower(self):
-        if len(self.Game.rods[0]) > 0 and len(self.Game.rods[2]) > 0:
+    def lower_higher(self):
+        rod_1 = self.order[self.actual_change][0]
+        rod_2 = self.order[self.actual_change][1]
+        if len(self.Game.rods[rod_1]) > 0 and len(self.Game.rods[rod_2]) > 0:
             self.lower, self.higher = (
-                2, 0) if self.Game.rods[0][-1] > self.Game.rods[2][-1] else (0, 2)
-        elif len(self.Game.rods[0]) > 0:
-            self.lower, self.higher = (2, 0)
-        elif len(self.Game.rods[2]) > 0:
-            self.lower, self.higher = (0, 2)
+                rod_2, rod_1) if self.Game.rods[rod_2][-1] > self.Game.rods[rod_1][-1] else (rod_1, rod_2)
+        elif len(self.Game.rods[rod_1]) > 0:
+            self.lower, self.higher = (rod_2, rod_1)
+        elif len(self.Game.rods[rod_2]) > 0:
+            self.lower, self.higher = (rod_1, rod_2)
 
-    def clear_midrow(self):
-        for _ in range(len(self.Game.rods[1])):
-            self.Game.change(1, 0)
+    def recursion_solve(self):
+        if not (Game.check_win() or Game.moves == (2 ** Game.number_disks) - 1):
+            self.lower_higher()
+            Game.change(self.higher, self.lower)
+            self.actual_change = 0 if self.actual_change >= 2 else self.actual_change + 1
+            self.recursion_solve()
 
-    def higher_to_midrow(self):
-        if len(self.Game.rods[1]) > 0:
-            if self.Game.rods[1][-1] < self.Game.rods[self.higher][-1]:
-                self.Game.change(1, self.lower)
-                self.higher_to_midrow()
-                self.Game.change(self.lower, 1)
-            else:
-                self.Game.change(self.higher, 1)
-        else:
-            self.Game.change(self.higher, 1)
-
-    def solve(self):
-        tries = 0
-        self.clear_midrow()
-        while not self.Game.check_win():
-            self.higher_lower()
-            self.higher_to_midrow()
-            if tries > 2*self.Game.number_disks:
-                break
-            tries += 1
+    def non_recursion_solve(self):
+        while not(self.Game.check_win() or self.Game.moves > (2 ** self.Game.number_disks)):
+            self.lower_higher()
+            self.Game.change(self.higher, self.lower)
+            self.actual_change = 0 if self.actual_change >= 2 else self.actual_change + 1
 
 
 if __name__ == '__main__':
-    Game = HanoiTower()
+    Game = HanoiTower(14)
+    setrecursionlimit(2*(2**Game.number_disks))
     Solve = SolveHanoiTower(Game)
-    Solve.solve()
+    print(str(Game))
+    Solve.recursion_solve()
+    print('End')
+    print(str(Game))
+    print(Game.check_win())
+    print(Game.number_disks, Game.moves)
+
+    Game = HanoiTower(20)
+    setrecursionlimit(2*(2**Game.number_disks))
+    Solve = SolveHanoiTower(Game)
+    print(str(Game))
+    Solve.non_recursion_solve()
+    print('End')
     print(str(Game))
     print(Game.check_win())
     print(Game.number_disks, Game.moves)
