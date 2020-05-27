@@ -13,6 +13,9 @@ class HanoiTower:
 
     def change(self, rod_from, rod_to):
         try:
+            if len(self.rods[rod_to]) > 0:
+                if(self.rods[rod_from][-1] > self.rods[rod_to][-1]):
+                    return False
             number = self.rods[rod_from][-1]
             self.rods[rod_to].append(number)
             self.rods[rod_from].pop()

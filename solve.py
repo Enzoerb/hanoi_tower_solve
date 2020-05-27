@@ -18,23 +18,26 @@ class SolveHanoiTower:
         rod_2 = self.order[self.actual_change][1]
         if len(self.Game.rods[rod_1]) > 0 and len(self.Game.rods[rod_2]) > 0:
             self.lower, self.higher = (
-                rod_2, rod_1) if self.Game.rods[rod_2][-1] > self.Game.rods[rod_1][-1] else (rod_1, rod_2)
+                rod_2, rod_1) if self.Game.rods[rod_2][-1] < self.Game.rods[rod_1][-1] else (rod_1, rod_2)
+            if(self.Game.rods[self.higher][-1] < self.Game.rods[self.lower][-1]):
+                return False
         elif len(self.Game.rods[rod_1]) > 0:
-            self.lower, self.higher = (rod_2, rod_1)
-        elif len(self.Game.rods[rod_2]) > 0:
             self.lower, self.higher = (rod_1, rod_2)
+        elif len(self.Game.rods[rod_2]) > 0:
+            self.lower, self.higher = (rod_2, rod_1)
+        return True
 
     def recursion_solve(self):
         if not (Game.check_win() or Game.moves == (2 ** Game.number_disks) - 1):
             self.lower_higher()
-            Game.change(self.higher, self.lower)
+            Game.change(self.lower, self.higher)
             self.actual_change = 0 if self.actual_change >= 2 else self.actual_change + 1
             self.recursion_solve()
 
     def non_recursion_solve(self):
         while not(self.Game.check_win() or self.Game.moves > (2 ** self.Game.number_disks)):
             self.lower_higher()
-            self.Game.change(self.higher, self.lower)
+            self.Game.change(self.lower, self.higher)
             self.actual_change = 0 if self.actual_change >= 2 else self.actual_change + 1
 
 
