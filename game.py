@@ -10,6 +10,8 @@ class HanoiTower:
 
     def inicialize_game(self):
         self.rods[0] = list(range(self.number_disks-1, -1, -1))
+        self.rods[1] = []
+        self.rods[2] = []
 
     def change(self, rod_from, rod_to):
         try:
